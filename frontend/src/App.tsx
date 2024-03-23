@@ -1,9 +1,10 @@
-import MainRouter from "./routes/MainRouter";
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import routeList from "./Routes/MainRouter";
+const router = createBrowserRouter(routeList);
 function App() {
   return (
     <>
-      <MainRouter />
+      <RouterProvider router={router} />
     </>
   );
 }

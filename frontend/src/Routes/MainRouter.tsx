@@ -1,7 +1,32 @@
-import React from "react";
+import MainLayout from "../Layouts/MainLayout";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../pages/LoginPage";
+import SignUp from "../pages/SignUp";
 
-const MainRouter = () => {
-  return <div>MainRouter</div>;
-};
+const routeList = [
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/signup",
+        element: <SignUp />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/about",
+        element: <h1>About</h1>,
+      },
+    ],
+    errorElement: <h1>Page Not Found</h1>,
+  },
+];
 
-export default MainRouter;
+export default routeList;

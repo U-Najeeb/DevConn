@@ -1,18 +1,26 @@
 import Navbar from "../components/Navbar";
 import SideBar from "../components/SideBar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
+  const location = useLocation();
+  const { pathname } = location;
+  const renderLayout =
+    !pathname.startsWith("/signup") && !pathname.startsWith("/login");
   return (
-    <div className="layout">
-      <Navbar />
-      <div className="flex">
-        <SideBar />
-        <div className="content">
-          <Outlet />
-        </div>
-      </div>
-    </div>
+    <>
+      {renderLayout && (
+        <>
+          <Navbar />
+          <SideBar />
+          <div className="content ml-72 mt-28">
+            <Outlet />
+          </div>
+        </>
+      )}
+
+      {!renderLayout && <Outlet />}
+    </>
   );
 };
 
