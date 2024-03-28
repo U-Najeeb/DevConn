@@ -1,5 +1,4 @@
-export type UserTypes = {
-  _id: string;
+export type SignUpTypes = {
   firstName: string;
   lastName: string;
   email: string;
@@ -10,9 +9,9 @@ export type UserTypes = {
   profilePicture?: string | ArrayBuffer | null;
   skills?: string[];
   username: string;
-  connections: [];
-  posts: [];
-  events: [];
-  isAdmin: boolean;
-  isActive: boolean;
+};
+
+export type LoginTypes = {
+  email: string;
+  password: string;
 };

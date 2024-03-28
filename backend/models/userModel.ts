@@ -34,7 +34,12 @@ const userSchema = new mongoose.Schema<UserDocument>(
     bio: { type: String },
     gender: { type: String, required: true },
     profilePicture: { type: String, default: "" },
-    skills: { type: [String], default: [] },
+    skills: [
+      {
+        name: { type: String, required: true },
+        level: { type: Number, default: 0 },
+      },
+    ],
     dob: { type: String, default: "" },
     connections: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
@@ -56,7 +61,6 @@ userSchema.methods.checkPassword = async function (
   passwordFromBody: string,
   passwordInDb: string
 ) {
-  console.log(await bcrypt.compare(passwordFromBody, passwordInDb));
   return await bcrypt.compare(passwordFromBody, passwordInDb);
 };
 

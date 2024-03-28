@@ -6,7 +6,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
 const signingFunc = (payload: string | object): string | undefined => {
-  console.log(payload);
   if (!process.env.JWT_SECRET) {
     return undefined;
   }
@@ -106,24 +105,20 @@ const validateToken = catchAsync(
     if (!process.env.JWT_SECRET) {
       return next(new AppError("JWT SECRET OR TOKEN NOT FOUND", 400));
     }
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findOne({
-        _id: (decoded as JwtPayload)?.payload,
-      });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({
+      _id: (decoded as JwtPayload)?.payload,
+    });
 
-      if (!user) {
-        return next(new AppError("User not found", 404));
-      }
-
-      req.user = decoded as JwtPayload;
-      res.status(200).json({
-        message: "User already logged in",
-        user,
-      });
-    } catch (err) {
-      return next(err);
+    if (!user) {
+      return next(new AppError("User not found", 404));
     }
+
+    req.user = decoded as JwtPayload;
+    res.status(200).json({
+      message: "User already logged in",
+      user,
+    });
   }
 );
 
@@ -133,7 +128,7 @@ const logout = catchAsync(
     if (token) {
       res.clearCookie("jwt", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "none",
       });
 

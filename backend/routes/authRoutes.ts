@@ -14,6 +14,6 @@ authRouter.post("/signup", signUp);
 
 authRouter.post("/logout", logout);
 
-authRouter.post("/validate-token", validateToken);
+authRouter.get("/validate-token", validateToken);
 
 export default authRouter;

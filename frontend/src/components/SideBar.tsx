@@ -8,10 +8,32 @@ import { MdOutlineChat } from "react-icons/md";
 import { PiBrain } from "react-icons/pi";
 import { FaSuitcase } from "react-icons/fa";
 import { MdOutlineTextSnippet } from "react-icons/md";
+import { useMutation } from "@tanstack/react-query";
+import { useAxios } from "../api/axiosConfig";
+import { MouseEventHandler } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../context/userContext";
 
 const SideBar = () => {
+  const { setUserData } = useUserContext();
+  const navigate = useNavigate();
+  const { mutate: logoutMutation } = useMutation({
+    mutationKey: ["logout"],
+    mutationFn: async () => {
+      await useAxios.post("/auth/logout", {});
+    },
+    onSuccess: () => {
+      setUserData(undefined);
+      navigate("/login");
+    },
+  });
+
+  const handleLogout: MouseEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    logoutMutation();
+  };
   return (
-    <nav className="pt-28 sidebar w-[19%] h-full p-5 overflow-y-auto overflow-x-hidden fixed top-0  transition-all  duration-300 ease-in-out z-0 bg-[#070F2B]">
+    <nav className="pt-28 sidebar w-[20%] max-w-[20rem] h-full p-5 overflow-y-auto overflow-x-hidden fixed top-0  transition-all  duration-300 ease-in-out bg-[#070F2B]">
       <div className="transition-all  duration-300 ease-in-out rounded-lg">
         <div className=" bg-[#1B1A55] p-5 rounded-lg flex flex-col gap-3 shadow-md transition-all  duration-300 ease-in-out">
           <div>
@@ -115,7 +137,10 @@ const SideBar = () => {
               <div className="rounded-full">
                 <MdLogout style={{ color: "white", fontSize: "1.5rem" }} />
               </div>
-              <button className="font-semibold text-md text-white">
+              <button
+                className="font-semibold text-md text-white"
+                onClick={handleLogout}
+              >
                 Log Out
               </button>
             </div>

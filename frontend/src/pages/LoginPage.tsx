@@ -1,21 +1,25 @@
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import logo from "/images/Devcon.png";
 import { useMutation } from "@tanstack/react-query";
-import { LoginTypes } from "../types/User";
+import { LoginTypes } from "../types/AuthTypes";
 import { useAxios } from "../api/axiosConfig";
-
+import { useUserContext } from "../context/userContext";
 const LoginPage = () => {
   const navigate = useNavigate();
-
+  const { setUserData, userData } = useUserContext();
   const loginFn = async (loginData: LoginTypes) => {
-    const response = await useAxios.post("/auth/login", loginData);
-    response.status === 200 ? navigate("/") : navigate("/login");
+    const res = await useAxios.post("/auth/login", loginData);
+    return res.data.user;
   };
-  const { mutate } = useMutation({
+  const { mutate, error, status } = useMutation({
     mutationKey: ["login-data"],
     mutationFn: loginFn,
+    onSuccess: (data) => {
+      setUserData(data);
+      navigate("/");
+    },
   });
 
   const handleSubmit = (e: FormEvent) => {
@@ -28,11 +32,16 @@ const LoginPage = () => {
 
     mutate(loginData);
   };
+
+  if (error) console.log("error", error);
+
+  if (userData) return <Navigate to="/" />;
   return (
     <div
       className="flex justify-center h-screen items-center object-cover"
       style={{
         backgroundImage: "url(/images/signup--background.jpg)",
+        backgroundSize: "contain",
       }}
     >
       <div className="gap-4 px-8 py-8 rounded-lg bg-white mr-20 flex justify-center flex-col">
@@ -47,7 +56,7 @@ const LoginPage = () => {
           className="flex flex-col gap-4 "
           onSubmit={handleSubmit}
         >
-          <div>
+          <div className="flex justify-center">
             <h1 className="text-[1.5rem] font-bold uppercase text-[#070F2B] text-center">
               Login
             </h1>
@@ -81,19 +90,23 @@ const LoginPage = () => {
               />
             </div>
           </div>
-          <div className="flex justify-between items-center mt-3 flex-col">
-            <div className="flex gap-2 flex-col justify-center items-center ">
-              <h3>Not a user? </h3>
-              <Link to={"/signup"} className="font-semibold text-[#1B1A55]">
+          <div className="mt-3 flex flex-col justify-center items-center">
+            <div className=" flex justify-center gap-2 items-center">
+              <h3 className=" text-sm w-fit">Not a user? </h3>
+              <Link
+                to={"/signup"}
+                className="font-semibold text-[#1B1A55] text-sm w-fit "
+              >
                 SignUp
               </Link>
             </div>
-            <label className="mt-6 w-full flex justify-center">
+            <hr className="border-1 w-52 mt-4" />
+            <label className="mt-4 w-full flex justify-center">
               <button
-                className="w-fit font-bold tracking-wider bg-[#070F2B] text-white px-4   py-2 rounded-lg"
+                className="w-fit font-bold tracking-wider bg-[#070F2B] text-white px-4  py-2 rounded-lg"
                 type="submit"
               >
-                Login
+                {status === "pending" ? "Logging In" : "Login"}
               </button>
             </label>
           </div>

@@ -3,8 +3,9 @@ import defaultProfile from "/images/defaultProfile.png";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { SignUpTypes } from "../types/User";
+import { SignUpTypes } from "../types/AuthTypes";
 import { useAxios } from "../api/axiosConfig";
+import { useUserContext } from "../context/userContext";
 
 interface FileInputEvent extends ChangeEvent {
   target: HTMLInputElement & EventTarget;
@@ -18,6 +19,7 @@ const SignUp = () => {
 
   const [skills, setSkills] = React.useState<string[]>([]);
   const [skillsInput, setSkillsInput] = React.useState("");
+  const { setUserData } = useUserContext();
   const navigate = useNavigate();
 
   const handleProfilePicture: FormEventHandler = (e: FileInputEvent) => {
@@ -42,9 +44,7 @@ const SignUp = () => {
       lastName: (e.currentTarget as HTMLFormElement).lastName.value,
       email: (e.currentTarget as HTMLFormElement).email.value,
       password: (e.currentTarget as HTMLFormElement).password.value,
-      gender:
-        (e.currentTarget as HTMLFormElement).male.value ||
-        (e.currentTarget as HTMLFormElement).female.value,
+      gender: (e.currentTarget as HTMLFormElement).gender.value,
     };
 
     localStorage.setItem("userData", JSON.stringify(userData));
@@ -62,7 +62,8 @@ const SignUp = () => {
 
   const signUpFn = async (signupData: SignUpTypes) => {
     const response = await useAxios.post("/auth/signup", signupData);
-    response.status === 200 ? navigate("/") : navigate("/signup");
+    setUserData(response?.data?.newUser);
+    response.status === 201 ? navigate("/") : navigate("/signup");
   };
 
   const { mutate } = useMutation({
@@ -96,9 +97,10 @@ const SignUp = () => {
 
   return (
     <div
-      className="flex justify-center h-screen items-center "
+      className="flex justify-center h-screen items-center"
       style={{
         backgroundImage: "url(/images/signup--background.jpg)",
+        backgroundSize: "contain",
       }}
     >
       <div className="gap-4 px-8 py-8 rounded-lg bg-white mr-20 flex justify-center">
@@ -132,7 +134,6 @@ const SignUp = () => {
                     accept="image/png, image/jpeg"
                     className="text-xs pl-12"
                     hidden
-                    required
                   />
                 </label>
               </div>
@@ -185,14 +186,14 @@ const SignUp = () => {
                   <label htmlFor="male" className="font-medium">
                     Male
                   </label>
-                  <input type="radio" id="male" name="male" value="male" />
+                  <input type="radio" id="male" name="gender" value="male" />
                   <label htmlFor="female" className="font-medium">
                     Female
                   </label>
                   <input
                     type="radio"
                     id="female"
-                    name="female"
+                    name="gender"
                     value="female"
                   />
                 </div>

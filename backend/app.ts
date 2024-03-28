@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoutes";
 import path from "path";
+import userRouter from "./routes/userRoutes";
+import postRouter from "./routes/postRoutes";
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
@@ -19,8 +21,8 @@ app.use(
 app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
-
-// app.use("/api/v1/users", authRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/posts", postRouter);
 
 app.all("*", (req: Request, _res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));

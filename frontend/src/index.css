@@ -11,7 +11,7 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #fbfcfe;
+  background-color: #070f2b;
 }
 .sidebar::-webkit-scrollbar {
   width: 3px;
@@ -31,4 +31,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #333;
+}
+
+body::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+body::-webkit-scrollbar-thumb {
+  background-color: #9290c3;
+  border-radius: 3px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: #535c91;
 }
