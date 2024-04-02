@@ -9,9 +9,12 @@ import CreateAPost from "../components/CreateAPost";
 import PostCard from "../components/PostCard";
 import { IoMdContact } from "react-icons/io";
 import { PostType } from "../types/PostTypes";
+import { useUserContext } from "../context/userContext";
+import { motion } from "framer-motion";
 
 const UserProfile = () => {
   const userId = useParams();
+  const { userData } = useUserContext();
   const { data, refetch: refetchUserData } = useQuery({
     queryKey: ["user-data", userId],
     queryFn: async () => {
@@ -34,8 +37,13 @@ const UserProfile = () => {
   }, [refetchUserData, refetchUserPosts]);
 
   return (
-    <div className="ml-1 flex justify-center items-center">
-      <div className="w-[90%]">
+    <motion.div
+      className="ml-10 flex justify-start items-start max-w-[80%]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.1, ease: "easeIn" }}
+    >
+      <div className="w-[100%] ">
         <div className="w-full flex flex-col justify-center p-3 bg-[#1B1A55]  rounded-lg ">
           <div className="relative">
             <div className="h-fit rounded-lg ">
@@ -63,9 +71,11 @@ const UserProfile = () => {
               </h1>
             </div>
             <div className="flex items-center gap-4 mr-2 mt-2">
-              <button className="text-white bg-[#10D876] p-3 rounded-lg ">
-                Connect
-              </button>
+              {userData?._id !== data?._id && (
+                <button className="text-white bg-[#10D876] p-3 rounded-lg ">
+                  Connect
+                </button>
+              )}
               <button className="bg-[#9290C3] p-4 rounded-lg">
                 <FaRegEnvelope
                   style={{ color: "#1E1D58", fontSize: "1.1rem" }}
@@ -78,7 +88,7 @@ const UserProfile = () => {
           </div>
         </div>
 
-        <div className="flex gap-10">
+        <div className="flex gap-10 ">
           <div className="w-fit ">
             <aside className="bg-[#1B1A55] mt-4 w-[20rem] p-4 rounded-lg">
               <div>
@@ -137,7 +147,7 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

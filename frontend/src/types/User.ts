@@ -8,7 +8,10 @@ export type UserTypes = {
   bio?: string;
   dob?: string;
   profilePicture?: string | ArrayBuffer | null;
-  skills?: string[];
+  skills?: {
+    name: string;
+    level: number;
+  }[];
   username: string;
   connections: [];
   posts: [];

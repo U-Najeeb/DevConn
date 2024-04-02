@@ -8,6 +8,7 @@ const postSchema = new mongoose.Schema(
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     tags: [{ type: String }],
+    type: { type: String, enum: ["code", "text", "event"], default: "text" },
   },
   { timestamps: true }
 );

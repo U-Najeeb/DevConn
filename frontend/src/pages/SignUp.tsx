@@ -1,4 +1,9 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  FormEventHandler,
+  useState,
+} from "react";
 import defaultProfile from "/images/defaultProfile.png";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,12 +17,16 @@ interface FileInputEvent extends ChangeEvent {
 }
 
 const SignUp = () => {
+  interface Skill {
+    name: string;
+    level: number;
+  }
   const [profilePicture, setProfilePicture] = React.useState<
     string | ArrayBuffer | null
   >(defaultProfile);
   const [stage, setStage] = React.useState(1);
 
-  const [skills, setSkills] = React.useState<string[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [skillsInput, setSkillsInput] = React.useState("");
   const { setUserData } = useUserContext();
   const navigate = useNavigate();
@@ -53,7 +62,7 @@ const SignUp = () => {
 
   const handleAddSkills = (e: FormEvent) => {
     e.preventDefault();
-    setSkills([...skills, skillsInput]);
+    setSkills([...skills, { name: skillsInput.trim(), level: 0 }]);
     setSkillsInput("");
   };
   const handleSkillsInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -281,7 +290,9 @@ const SignUp = () => {
                       key={index}
                     >
                       <div className="border-2 w-[5.5px] h-[6px] rounded-lg border-black"></div>
-                      <p className="text-sm font-semibold">{skill}</p>
+                      <p className="text-sm font-semibold">
+                        {skill.name.length === 0 ? "" : skill.name}
+                      </p>
                     </div>
                   ))}
                 </div>

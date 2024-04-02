@@ -28,10 +28,11 @@ const signUp = catchAsync(async (req: Request, res: Response) => {
   } = req.body;
 
   const processedImage = await processImage(
+    profilePicture?.split(",")[1],
     firstName,
-    lastName,
-    profilePicture?.split(",")[1]
+    lastName
   );
+
   const newUser = await User.create({
     firstName,
     lastName,

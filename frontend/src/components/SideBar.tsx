@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/userContext";
 
 const SideBar = () => {
-  const { setUserData } = useUserContext();
+  const { userData, setUserData } = useUserContext();
   const navigate = useNavigate();
   const { mutate: logoutMutation } = useMutation({
     mutationKey: ["logout"],
@@ -66,7 +66,12 @@ const SideBar = () => {
                 Chats
               </button>
             </div>
-            <div className="flex items-center gap-3">
+            <div
+              className="flex items-center gap-3"
+              onClick={() => {
+                navigate(`/profile/${userData?._id}`);
+              }}
+            >
               <div className="bg-gradient-to-r from-blue-900 to-blue-500 p-3 rounded-full">
                 <MdOutlinePerson
                   style={{ color: "white", fontSize: "1.3rem" }}
