@@ -81,4 +81,61 @@ const deletePostById = catchAsync(
     });
   }
 );
-export { createPost, getPostsByUserId, deletePostById };
+interface CustomRequest extends Request {
+  user?: JwtPayload;
+}
+const updatePostById = catchAsync(
+  async (req: CustomRequest, res: Response, _next: NextFunction) => {
+    interface postBody {
+      user?: ObjectId;
+      content?: string;
+      images?: string[];
+      likes?: string[];
+      comments?: string[];
+      tags?: string[];
+      type?: "code" | "text" | "event";
+    }
+    const user = req.user;
+    const postId = req.params.id;
+    const body: postBody = req.body;
+
+    const post = await Post.findOne({ _id: postId, likes: user?._id });
+    if (post) {
+      return res.status(400).json({ error: "User already liked this post" });
+    }
+    const updatedPost = await Post.findByIdAndUpdate(
+      { _id: postId },
+      {
+        $push: { likes: user?._id, comments: body.comments },
+        $set: { content: body.content },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(204).json({
+      message: `Post ${postId} updated`,
+      updatedPost,
+    });
+  }
+);
+
+const getAllPosts = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const posts = await Post.find().populate("user");
+    res.status(200).json({
+      message: `Posts Found`,
+      count: posts.length,
+      posts,
+    });
+  }
+);
+export {
+  createPost,
+  getPostsByUserId,
+  deletePostById,
+  updatePostById,
+  getAllPosts,
+};

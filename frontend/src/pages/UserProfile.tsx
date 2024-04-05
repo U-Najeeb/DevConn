@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { baseURL, useAxios } from "../api/axiosConfig";
 import coverImage from "/images/cover--photo.jpg";
@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 const UserProfile = () => {
   const userId = useParams();
   const { userData } = useUserContext();
+  const queryClient = useQueryClient();
   const { data, refetch: refetchUserData } = useQuery({
     queryKey: ["user-data", userId],
     queryFn: async () => {
@@ -35,6 +36,20 @@ const UserProfile = () => {
     refetchUserData();
     refetchUserPosts();
   }, [refetchUserData, refetchUserPosts]);
+
+  const { mutate: connectionMutation } = useMutation({
+    mutationKey: ["friend-request"],
+    mutationFn: async (userId: string) => {
+      await useAxios.post(`/friendrequest/sendfriendrequest/${userId}`);
+    },
+    onSettled: () => {
+      // queryClient.refetchQueries({ queryKey: ["friend-requests-data"] });
+      queryClient.invalidateQueries({ queryKey: ["friend-requests-data"] });
+    },
+  });
+  const connectionRequestHandler = (userId: string) => {
+    connectionMutation(userId);
+  };
 
   return (
     <motion.div
@@ -72,15 +87,20 @@ const UserProfile = () => {
             </div>
             <div className="flex items-center gap-4 mr-2 mt-2">
               {userData?._id !== data?._id && (
-                <button className="text-white bg-[#10D876] p-3 rounded-lg ">
+                <button
+                  className="text-white bg-[#10D876] p-3 rounded-lg "
+                  onClick={() => connectionRequestHandler(data._id)}
+                >
                   Connect
                 </button>
               )}
-              <button className="bg-[#9290C3] p-4 rounded-lg">
-                <FaRegEnvelope
-                  style={{ color: "#1E1D58", fontSize: "1.1rem" }}
-                />
-              </button>
+              {userData?._id !== data?._id && (
+                <button className="bg-[#9290C3] p-4 rounded-lg">
+                  <FaRegEnvelope
+                    style={{ color: "#1E1D58", fontSize: "1.1rem" }}
+                  />
+                </button>
+              )}
               <button className="bg-[#9290C3] p-4 rounded-lg">
                 <BsThreeDots style={{ color: "#1E1D58", fontSize: "1.1rem" }} />
               </button>
@@ -137,10 +157,16 @@ const UserProfile = () => {
               </div>
             </aside>
           </div>
-          <div className=" w-full flex flex-col gap-4">
-            <div className="mt-4 w-full">
-              <CreateAPost />
-            </div>
+          <div
+            className={`w-full flex flex-col gap-4 ${
+              userData?._id !== data?._id && "mt-4"
+            }`}
+          >
+            {userData?._id == data?._id && (
+              <div className="mt-4 w-full">
+                <CreateAPost />
+              </div>
+            )}
             {userPostData?.map((postData: PostType) => (
               <PostCard key={postData?._id} data={postData} />
             ))}

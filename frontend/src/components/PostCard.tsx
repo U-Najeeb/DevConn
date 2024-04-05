@@ -5,15 +5,21 @@ import { FaRegComment } from "react-icons/fa6";
 import { GoShareAndroid } from "react-icons/go";
 import { PostType } from "../types/PostTypes";
 import { UserTypes } from "../types/User";
-import { baseURL } from "../api/axiosConfig";
+import { baseURL, useAxios } from "../api/axiosConfig";
 import { useState } from "react";
 import CodeSnippet from "./CodeSnippet";
-// import { CodeBlock, dracula } from "react-code-blocks";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserContext } from "../context/userContext";
+import { useNavigate } from "react-router-dom";
+import TimeAndDateFormatter from "../utils/TimeAndDateFormatter";
 
 type postCardPropTypes = {
   data?: PostType;
 };
 const PostCard: React.FC<postCardPropTypes> = ({ data }) => {
+  const queryClient = useQueryClient();
+  const { userData } = useUserContext();
+  const navigate = useNavigate();
   const [showContent, setShowFullContent] = useState(false);
   const maxLength = 100;
   const toggleShowFullContent = () => {
@@ -21,13 +27,34 @@ const PostCard: React.FC<postCardPropTypes> = ({ data }) => {
   };
   const [minImages, setMinImages] = useState(3);
 
+  const { mutate: likeMutation } = useMutation({
+    mutationKey: ["likes"],
+    mutationFn: async (postId: string) => {
+      await useAxios.patch(`/posts/${postId}`, {
+        likes: userData?._id,
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+    },
+  });
+
+  const handleLikes = (postId: string) => {
+    likeMutation(postId);
+  };
+
+  const handleUsernameClick = (user: string) => {
+    navigate(`/profile/${user}`);
+  };
+
   return (
     <div className="w-full bg-[#1B1A55] border-[1px] rounded-lg">
       <div className="p-6 flex flex-col gap-4">
         <div className="flex justify-between">
           <div className="text-white flex gap-4 items-center">
             {(data?.user as UserTypes)?.profilePicture ? (
-              <div className="">
+              <div>
                 <img
                   src={baseURL + (data?.user as UserTypes)?.profilePicture}
                   alt="profilePicture"
@@ -38,15 +65,24 @@ const PostCard: React.FC<postCardPropTypes> = ({ data }) => {
               <CgProfile style={{ color: "white", fontSize: "1.8rem" }} />
             )}
             <div>
-              <h1 className="font-semibold text-[0.8rem]">
+              <h1
+                className="font-semibold text-[0.8rem] cursor-pointer"
+                onClick={() =>
+                  handleUsernameClick((data?.user as UserTypes)?._id)
+                }
+              >
                 {(data?.user as UserTypes)?.username}
               </h1>
-              <h2 className=" text-[0.8rem]">3 Hour ago</h2>
+              <h2 className=" text-[0.8rem]">
+                {TimeAndDateFormatter(data?.createdAt as string)}
+              </h2>
             </div>
           </div>
-          <button className="text-[#070F2B] bg-[#9290C3] p-2 rounded-full flex justify-center items-center w-9">
-            <BsThreeDots />
-          </button>
+          {userData?._id === (data?.user as UserTypes)?._id && (
+            <button className="text-[#070F2B] bg-[#9290C3] p-2 rounded-full flex justify-center items-center w-9">
+              <BsThreeDots />
+            </button>
+          )}
         </div>
         <div className="w-11/12">
           {data?.type !== "code" ? (
@@ -103,11 +139,19 @@ const PostCard: React.FC<postCardPropTypes> = ({ data }) => {
         <div className="flex justify-between items-center">
           <div className="flex gap-4 items-center">
             <div className="flex justify-center items-center gap-2">
-              <div className="bg-[#9290C3] w-fit p-2 rounded-full">
+              <div
+                className="bg-[#9290C3] w-fit p-2 rounded-full cursor-pointer"
+                onClick={() => handleLikes(data?._id as string)}
+              >
                 <LuThumbsUp style={{ color: "white" }} />
               </div>
               <span className="text-sm text-white font-semibold">
-                2.8K Likes
+                {(data?.likes?.length as number) > 0 ? data?.likes?.length : ""}
+                {(data?.likes?.length as number) == 0
+                  ? ""
+                  : (data?.likes?.length as number) > 1
+                  ? " likes"
+                  : " like"}
               </span>
             </div>
             <div className="flex justify-center items-center gap-2">
@@ -125,17 +169,6 @@ const PostCard: React.FC<postCardPropTypes> = ({ data }) => {
             <span className="text-sm font-medium">Share</span>
           </div>
         </div>
-
-        {/* {data?.content && (
-          <div className="mt-4">
-            <CodeBlock
-              text={codeSnippet}
-              language="jsx"
-              showLineNumbers={false}
-              theme={dracula}
-            />
-          </div>
-        )} */}
       </div>
     </div>
   );

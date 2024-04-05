@@ -2,7 +2,7 @@ import { FaRegPenToSquare } from "react-icons/fa6";
 import { MdOutlineInsertPhoto } from "react-icons/md";
 import { FaCode } from "react-icons/fa";
 import { BsCalendar2DateFill } from "react-icons/bs";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAxios } from "../api/axiosConfig";
 import { ChangeEventHandler, FormEvent, useState } from "react";
 import { PostType } from "../types/PostTypes";
@@ -11,6 +11,7 @@ const CreateAPost = () => {
   const [textAreaText, setTextAreaText] = useState("");
   const [postImages, setPostImages] = useState<string[]>([]);
   const [isCodeSnippet, setIsCodeSnippet] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleTextAreaText: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     e.preventDefault();
@@ -22,6 +23,9 @@ const CreateAPost = () => {
     mutationFn: async (postData: PostType) => {
       await useAxios.post("/posts/", postData);
       setTextAreaText("");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-posts"] });
     },
   });
 

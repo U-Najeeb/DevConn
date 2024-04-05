@@ -9,4 +9,5 @@ export type PostType = {
   comment?: string[];
   tags?: string;
   type?: "code" | "text" | "event";
+  createdAt?: string;
 };

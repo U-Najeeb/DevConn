@@ -1,11 +1,21 @@
+import { useQuery } from "@tanstack/react-query";
 import CreateAPost from "../components/CreateAPost";
 import PostCard from "../components/PostCard";
 import RightSideBar from "../components/RightSideBar";
-// import { useUserContext } from "../context/userContext";
 import { motion } from "framer-motion";
+import { useAxios } from "../api/axiosConfig";
+import Spinner from "../components/Spinner";
+import { PostType } from "../types/PostTypes";
 
 const HomePage = () => {
-  // const { userData } = useUserContext();
+  const { data: AllPostsData, status } = useQuery({
+    queryKey: ["all-posts"],
+    queryFn: async () => {
+      const response = await useAxios.get("/posts/");
+      return response?.data?.posts;
+    },
+  });
+
   return (
     <motion.div
       className="h-dvh bg-[#070F2B] -mt-6"
@@ -16,7 +26,18 @@ const HomePage = () => {
       <div className="flex w-full justify-evenly p-12">
         <div className="w-1/2 flex flex-col gap-5 ">
           <CreateAPost />
-          <PostCard />
+          {status === "success" ? (
+            AllPostsData.sort((a: PostType, b: PostType) => {
+              return (
+                new Date(b.createdAt as string).getTime() -
+                new Date(a.createdAt as string).getTime()
+              );
+            }).map((post: PostType, index: number) => (
+              <PostCard data={post} key={index} />
+            ))
+          ) : (
+            <Spinner />
+          )}
         </div>
         <RightSideBar />
       </div>
