@@ -18,12 +18,12 @@ const HomePage = () => {
 
   return (
     <motion.div
-      className="h-dvh bg-[#070F2B] -mt-6"
+      className="h-dvh bg-[#070F2B] -mt-6 py-[1.45rem]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.1, ease: "easeIn" }}
     >
-      <div className="flex w-full justify-evenly p-12">
+      <div className="flex w-full gap-16">
         <div className="w-1/2 flex flex-col gap-5 ">
           <CreateAPost />
           {status === "success" ? (

@@ -5,6 +5,7 @@ import SignUp from "../pages/SignUp";
 import ProtectedRoute from "./ProtectedRoute";
 import Spinner from "../components/Spinner";
 import UserProfile from "../pages/UserProfile";
+import FriendList from "../pages/FriendList";
 
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const protectedRoutes = [
@@ -23,6 +24,10 @@ const protectedRoutes = [
       {
         path: "/profile/:id",
         element: <UserProfile />,
+      },
+      {
+        path: "/friends",
+        element: <FriendList />,
       },
     ],
   },

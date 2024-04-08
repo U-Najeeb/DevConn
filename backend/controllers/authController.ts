@@ -109,7 +109,7 @@ const validateToken = catchAsync(
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({
       _id: (decoded as JwtPayload)?.payload,
-    });
+    }).populate("connections");
 
     if (!user) {
       return next(new AppError("User not found", 404));

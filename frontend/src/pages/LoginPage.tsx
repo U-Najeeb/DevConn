@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { LoginTypes } from "../types/AuthTypes";
 import { useAxios } from "../api/axiosConfig";
 import { useUserContext } from "../context/userContext";
+import Spinner from "../components/Spinner";
 const LoginPage = () => {
   const navigate = useNavigate();
   const { setUserData, userData } = useUserContext();
@@ -13,7 +14,7 @@ const LoginPage = () => {
     const res = await useAxios.post("/auth/login", loginData);
     return res.data.user;
   };
-  const { mutate, error, status } = useMutation({
+  const { mutate, status } = useMutation({
     mutationKey: ["login-data"],
     mutationFn: loginFn,
     onSuccess: (data) => {
@@ -32,8 +33,6 @@ const LoginPage = () => {
 
     mutate(loginData);
   };
-
-  if (error) console.log("error", error);
 
   if (userData) return <Navigate to="/" />;
   return (
@@ -106,7 +105,7 @@ const LoginPage = () => {
                 className="w-fit font-bold tracking-wider bg-[#070F2B] text-white px-4  py-2 rounded-lg"
                 type="submit"
               >
-                {status === "pending" ? "Logging In" : "Login"}
+                {status === "pending" ? <Spinner size={40} /> : "Login"}
               </button>
             </label>
           </div>

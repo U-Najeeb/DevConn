@@ -160,14 +160,14 @@ const Navbar = () => {
           </div>
           <div
             className={`p-4 rounded-full ${
-              isActive === "person" ? "bg-[#9290C3]" : "bg-[#1B1A55]"
+              isActive === "friends" ? "bg-[#9290C3]" : "bg-[#1B1A55]"
             } flex justify-center items-center cursor-pointer`}
-            onClick={() => handleIconClick("person")}
+            onClick={() => handleIconClick("friends")}
           >
             <MdPerson
               style={{
                 fontSize: "22px",
-                color: `${isActive === "person" ? "#1B1A55" : "#9290C3"}`,
+                color: `${isActive === "friends" ? "#1B1A55" : "#9290C3"}`,
               }}
             />
           </div>

@@ -7,7 +7,7 @@ const MainLayout = () => {
     <>
       <Navbar />
       <SideBar />
-      <div className="content ml-72 mt-28">
+      <div className="content ml-80 mt-28 ">
         <Outlet />
       </div>
     </>

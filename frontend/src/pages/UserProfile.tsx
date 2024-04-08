@@ -43,7 +43,7 @@ const UserProfile = () => {
       await useAxios.post(`/friendrequest/sendfriendrequest/${userId}`);
     },
     onSettled: () => {
-      // queryClient.refetchQueries({ queryKey: ["friend-requests-data"] });
+      queryClient.refetchQueries({ queryKey: ["friend-requests-data"] });
       queryClient.invalidateQueries({ queryKey: ["friend-requests-data"] });
     },
   });

@@ -2,6 +2,7 @@ import { JwtPayload } from "jsonwebtoken";
 import FriendRequest from "../models/friendRequestModel";
 import { catchAsync } from "../utils/catchAsync";
 import { Request, Response, NextFunction } from "express";
+import User from "../models/userModel";
 
 interface CustomRequest extends Request {
   user?: JwtPayload;
@@ -37,4 +38,51 @@ const getFriendReqestsByUserId = catchAsync(
   }
 );
 
-export { sendFriendRequest, getFriendReqestsByUserId };
+const confirmRequest = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const requestId = req.params.id;
+    const friendRequest = await FriendRequest.findOneAndUpdate(
+      {
+        _id: requestId,
+      },
+      { status: "Accepted" },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    await User.findByIdAndUpdate(
+      { _id: friendRequest?.sender },
+      { $push: { connections: friendRequest?.receiver } },
+      { new: true, runValidators: true }
+    );
+
+    await User.findByIdAndUpdate(
+      { _id: friendRequest?.receiver },
+      { $push: { connections: friendRequest?.sender } },
+      { new: true, runValidators: true }
+    );
+    res.status(200).json({
+      message: "Friend Request Accepted",
+      friendRequest,
+    });
+  }
+);
+
+const deleteFriendRequest = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    const requestId = req.params.id;
+    await FriendRequest.findByIdAndDelete({ _id: requestId });
+
+    res.status(200).json({
+      message: "Friend Requests Deleted",
+    });
+  }
+);
+export {
+  sendFriendRequest,
+  getFriendReqestsByUserId,
+  confirmRequest,
+  deleteFriendRequest,
+};
