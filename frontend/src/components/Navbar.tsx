@@ -68,28 +68,28 @@ const Navbar = () => {
   };
 
   return (
-    <div className="nav--container p-2  flex justify-center items-center w-full  shadow-md z-50 bg-[#070F2B] fixed top-0 ">
-      <div className="nav--wrapper justify-between  flex items-center p-2 w-full max-w-[100rem] z-50">
-        <div className=" w-1/4">
+    <div className="nav--container p-2 flex justify-center items-center w-full shadow-md z-50 bg-[#070F2B] fixed top-0">
+      <div className="nav--wrapper justify-between flex items-center p-2 w-full max-w-[100rem] z-50">
+        <div className="w-1/4">
           <img src={logo} alt="logo" className="w-1/2" />
         </div>
         <div className="w-1/4 relative max-w-[23rem]">
           <form className="">
-            <div className="flex justify-center items-center rounded-full px-4  bg-[#535C91]">
+            <div className="flex justify-center items-center rounded-full px-4 bg-[#535C91]">
               <IoIosSearch style={{ color: "white" }} />
               <input
                 type="text"
                 value={searchText}
                 name="search--bar"
                 placeholder="Search"
-                className="outline-0 w-80 p-3 rounded-full bg-[#535C91] text-white"
+                className="outline-0 w-40 sm:w-60 p-3 rounded-full bg-[#535C91] text-white"
                 onChange={handleSearch}
                 onClick={handleModalPopup}
               />
             </div>
             <div
               onClick={handleModalPopup}
-              className={`fixed z-0 w-full h-screen  top-0 left-0 ${
+              className={`fixed z-0 w-full h-screen top-0 left-0 ${
                 isVisible ? "block" : "hidden"
               }`}
             />
@@ -113,7 +113,7 @@ const Navbar = () => {
                       key={person._id}
                     >
                       <div className="flex items-center gap-2">
-                        <div className="rounded-full ">
+                        <div className="rounded-full">
                           <img
                             src={baseURL + person.profilePicture}
                             alt="personPhoto"

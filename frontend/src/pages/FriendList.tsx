@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useState } from "react";
+import { ChangeEventHandler, useEffect, useState } from "react";
 import FriendCard from "../components/FriendCard";
 import { useUserContext } from "../context/userContext";
 import { UserTypes } from "../types/User";
@@ -6,15 +6,23 @@ import { UserTypes } from "../types/User";
 const FriendList = () => {
   const { userData } = useUserContext();
   const [searchText, setSearchText] = useState("");
+  const [filteredConnections, setFilteredConnections] = useState<
+    UserTypes[] | undefined
+  >(undefined);
 
   const handleSearchText: ChangeEventHandler<HTMLInputElement> = (e) => {
     setSearchText(e.target.value);
   };
-  const filteredConnections = userData?.connections.filter(
-    (connection: UserTypes) => {
-      return connection?.firstName.includes(searchText);
-    }
-  );
+
+  useEffect(() => {
+    const filteredConnections = userData?.connections.filter(
+      (connection: UserTypes) => {
+        return connection?.firstName?.includes(searchText);
+      }
+    );
+
+    setFilteredConnections(filteredConnections);
+  }, [searchText, userData?.connections]);
 
   return (
     <div className="flex justify-center ">

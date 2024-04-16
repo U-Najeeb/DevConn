@@ -32,6 +32,7 @@ const SideBar = () => {
     e.preventDefault();
     logoutMutation();
   };
+
   return (
     <nav className="pt-28 sidebar w-[20%] max-w-[20rem] h-full p-5 overflow-y-auto overflow-x-hidden fixed top-0  transition-all  duration-300 ease-in-out bg-[#070F2B]">
       <div className="transition-all  duration-300 ease-in-out rounded-lg">
@@ -58,7 +59,12 @@ const SideBar = () => {
                 Badges
               </button>
             </div>
-            <div className="flex items-center gap-3">
+            <div
+              className="flex items-center gap-3"
+              onClick={() => {
+                navigate(`/chats`);
+              }}
+            >
               <div className="bg-gradient-to-r from-[#F11D60] to-[#FC5817] p-3 rounded-full">
                 <MdOutlineChat style={{ color: "white", fontSize: "1.3rem" }} />
               </div>

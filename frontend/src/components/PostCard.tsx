@@ -49,7 +49,7 @@ const PostCard: React.FC<postCardPropTypes> = ({ data }) => {
   };
 
   return (
-    <div className="w-full bg-[#1B1A55] border-[1px] rounded-lg">
+    <div className="w-full bg-[#1B1A55] rounded-lg">
       <div className="p-6 flex flex-col gap-4">
         <div className="flex justify-between">
           <div className="text-white flex gap-4 items-center">

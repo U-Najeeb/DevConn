@@ -6,6 +6,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Spinner from "../components/Spinner";
 import UserProfile from "../pages/UserProfile";
 import FriendList from "../pages/FriendList";
+import ChatsPage from "../pages/ChatsPage";
+import GroupPage from "../pages/GroupsPage";
 
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const protectedRoutes = [
@@ -28,6 +30,14 @@ const protectedRoutes = [
       {
         path: "/friends",
         element: <FriendList />,
+      },
+      {
+        path: "/chats",
+        element: <ChatsPage />,
+      },
+      {
+        path: "/groups",
+        element: <GroupPage />,
       },
     ],
   },

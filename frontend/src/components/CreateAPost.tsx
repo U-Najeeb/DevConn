@@ -57,7 +57,7 @@ const CreateAPost = () => {
   };
 
   return (
-    <div className="w-full rounded-lg bg-[#1B1A55] p-4 shadow-md border-[1px]">
+    <div className="w-full rounded-lg bg-[#1B1A55] p-4 shadow-md ">
       <div className="flex flex-col gap-4">
         <form className="flex flex-col gap-3" onSubmit={handleCreatePost}>
           <div className="flex items-center gap-2">
