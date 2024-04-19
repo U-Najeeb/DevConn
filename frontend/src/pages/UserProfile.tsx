@@ -77,16 +77,21 @@ const UserProfile = () => {
             </div>
           </div>
           <div className="flex justify-between items-center ml-56">
-            <div>
+            <div className="mt-2">
               <div className="flex items-center gap-2">
-                <h1 className="text-white font-medium text-lg">{`${
+                <h4 className="text-white font-medium text-[1.125rem]">{`${
                   data?.firstName + " " + data?.lastName
-                }`}</h1>
+                }`}</h4>
                 <h6 className="text-white text-xs">
                   {" " + "@" + data?.username}
                 </h6>
               </div>
-              <h1 className="text-white mt-1 text-sm ">{"Web Developer"}</h1>
+              <div>
+                <h1 className="text-white text-[0.75rem]">
+                  {data?.connections?.length + " " + "Contacts"}
+                </h1>
+                <h1 className="text-white mt-1 text-sm ">{"Web Developer"}</h1>
+              </div>
             </div>
             <div className="flex items-center gap-4 mr-2 mt-2">
               {userData?._id !== data?._id && (
